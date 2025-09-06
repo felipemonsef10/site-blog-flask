@@ -1,3 +1,4 @@
 venv/
-templates/bootstrap_testes/
-__pycache__/
+teste.py
+comunidadepython/templates/bootstrap_testes/
+comunidadepython/__pycache__/
