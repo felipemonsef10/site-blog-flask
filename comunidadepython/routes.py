@@ -2,7 +2,7 @@ from flask import render_template, redirect, flash, url_for, request
 from comunidadepython import app, db, bcrypt
 from comunidadepython.forms import FormLogin, FormCriarConta
 from comunidadepython.models import Usuario
-from flask_login import login_user
+from flask_login import login_user, logout_user, current_user, login_required
 
 
 lista_users = [
@@ -23,6 +23,7 @@ def contato():
 
 
 @app.route('/usuarios')
+@login_required
 def usuarios():
     return render_template('usuarios.html', lista_users=lista_users)
 
@@ -61,3 +62,23 @@ def login():
         return redirect(url_for('home'))
 
     return render_template('login.html', form_login=form_login, form_criarconta=form_criarconta)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Logout realizado com sucesso.', 'alert-success')
+    return redirect(url_for('home'))
+
+
+@app.route('/perfil')
+@login_required
+def perfil():
+    return render_template('perfil.html')
+
+
+@app.route('/post/criar')
+@login_required
+def criar_post():
+    return render_template('criarpost.html')
