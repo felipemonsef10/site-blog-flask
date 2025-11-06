@@ -2,3 +2,4 @@ venv/
 teste.py
 comunidadepython/templates/bootstrap_testes/
 comunidadepython/__pycache__/
+instance/
