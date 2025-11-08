@@ -22,3 +22,9 @@ class FormCriarConta(FlaskForm):
         usuario = Usuario.query.filter_by(email=email.data).first()
         if usuario:
             raise ValidationError('E-mail já cadastrado! Cadastre-se com outro e-mail ou faça login para continuar')
+        
+
+class FormEditarPerfil(FlaskForm):
+    username = StringField('Nome do Usuário', validators=[DataRequired()])
+    email = StringField('E-mail', validators=[DataRequired(), Email()])
+    botao_submit_editar_perfil = SubmitField('Confirmar')
