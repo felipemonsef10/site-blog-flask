@@ -94,5 +94,19 @@ def criar_post():
 def editar_perfil():
     form = FormEditarPerfil()
 
+    if form.validate_on_submit():
+        current_user.email = form.email.data
+        current_user.username = form.username.data
+
+        # with app.app_context():
+        db.session.commit()
+        
+        flash(f'Perfil atualizado com Sucesso', 'alert-success')
+        return redirect(url_for('perfil'))
+
+    elif request.method == "GET":
+        form.email.data = current_user.email
+        form.username.data = current_user.username
+
     foto_perfil = url_for('static', filename='fotos_perfil/{}'.format(current_user.foto_perfil))
     return render_template('editar_perfil.html', foto_perfil=foto_perfil, form=form)
