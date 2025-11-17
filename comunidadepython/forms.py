@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from comunidadepython.models import Usuario
 from flask_login import current_user
@@ -28,6 +29,7 @@ class FormCriarConta(FlaskForm):
 class FormEditarPerfil(FlaskForm):
     username = StringField('Nome do Usuário', validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired(), Email()])
+    foto_perfil = FileField('Atualizar Foto de Perfil', validators=[FileAllowed(['png', 'jpg'])])
     botao_submit_editar_perfil = SubmitField('Confirmar')
 
     def validate_email(self, email):
