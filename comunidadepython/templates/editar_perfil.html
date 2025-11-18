@@ -47,14 +47,24 @@
                         {{ form.foto_perfil.label(class="form-label") }}
                         {{ form.foto_perfil(class="form-control") }}
 
-
                         {% if form.foto_perfil.errors %}
                             {% for erro in form.foto_perfil.errors %}
                                 <span class="text-danger">{{ erro }}</span><br>
                             {% endfor %}
                         {% endif %}
-                        
                     </div>
+                    
+                    <hr>
+
+                    <p>Cursos</p>
+                    {% for campo in form %}
+                        {% if campo.name.startswith('curso_') %}
+                            <div class="form-group">
+                                {{ campo(class='form-check-input') }}
+                                {{ campo.label(class='form-check-label') }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
 
                 </fieldset>
                 {{ form.botao_submit_editar_perfil(class="btn btn-primary mb-3 mt-3") }}
