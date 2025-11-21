@@ -8,13 +8,6 @@ import os
 from PIL import Image
 
 
-lista_users = [
-    'Felipe',
-    'João',
-    'Fernanda'
-]
-
-
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -28,7 +21,8 @@ def contato():
 @app.route('/usuarios')
 @login_required
 def usuarios():
-    return render_template('usuarios.html', lista_users=lista_users)
+    usuarios = Usuario.query.all()
+    return render_template('usuarios.html', usuarios=usuarios)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -82,8 +76,14 @@ def logout():
 @app.route('/perfil')
 @login_required
 def perfil():
+    if current_user.cursos == 'Não Informado':
+        qtd_cursos = 0
+    else:
+        qtd_cursos = len(current_user.cursos.split(';'))
+
     foto_perfil = url_for('static', filename='fotos_perfil/{}'.format(current_user.foto_perfil))
-    return render_template('perfil.html', foto_perfil=foto_perfil)
+
+    return render_template('perfil.html', foto_perfil=foto_perfil, qtd_cursos=qtd_cursos)
 
 
 @app.route('/post/criar')
@@ -107,6 +107,26 @@ def salvar_imagem(imagem):
     return nome_imagem_codificada
 
 
+def atualizar_cursos(form):
+    cursos = []
+    for campo in form:
+        if campo.name.startswith('curso_'):
+            if campo.data == True:
+                cursos.append(campo.label.text)
+
+    if len(cursos) == 0:
+        return 'Não Informado'
+
+    return (';').join(cursos)
+
+
+def verificar_cursos(form, cursos_usuario):
+    for campo in form:
+        if campo.name.startswith('curso_'):
+            if campo.label.text in cursos_usuario:
+                campo.data = True
+
+
 @app.route('/perfil/editar',  methods=['GET', 'POST'])
 @login_required
 def editar_perfil():
@@ -124,8 +144,12 @@ def editar_perfil():
             current_user.email = form.email.data
             mudou = True
 
-        elif current_user.username != form.username.data:
+        if current_user.username != form.username.data:
             current_user.username = form.username.data
+            mudou = True
+
+        if current_user.cursos != atualizar_cursos(form):
+            current_user.cursos = atualizar_cursos(form)
             mudou = True
 
         if mudou:
@@ -138,6 +162,7 @@ def editar_perfil():
     elif request.method == "GET":
         form.email.data = current_user.email
         form.username.data = current_user.username
+        verificar_cursos(form, current_user.cursos)
 
     foto_perfil = url_for('static', filename='fotos_perfil/{}'.format(current_user.foto_perfil))
     return render_template('editar_perfil.html', foto_perfil=foto_perfil, form=form)

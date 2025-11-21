@@ -4,8 +4,12 @@
 {% block body %}
     <div class="container">
         <h1>Usuários</h1>
-        {% for user in lista_users%}
-            <p>{{ user }}</p>
+        {% for user in usuarios %}
+            <div class="card">
+                <img src="{{ url_for('static', filename='fotos_perfil/{}'.format(user.foto_perfil)) }}" alt="ads" style="width: 150px;"">
+                <p>{{ user.username }}</p>
+                <p>{{ user.email }}</p>
+            </div>
             <hr>
         {% endfor %}
     </div>
