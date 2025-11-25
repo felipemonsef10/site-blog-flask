@@ -2,15 +2,52 @@
 
 
 {% block body %}
-    <div class="container">
+
+    <div class="container" style="text-align: center;">
+        <hr>
         <h1>Usuários</h1>
-        {% for user in usuarios %}
-            <div class="card">
-                <img src="{{ url_for('static', filename='fotos_perfil/{}'.format(user.foto_perfil)) }}" alt="ads" style="width: 150px;"">
-                <p>{{ user.username }}</p>
-                <p>{{ user.email }}</p>
-            </div>
-            <hr>
-        {% endfor %}
+        <hr>
     </div>
+
+    {% for user in usuarios %}
+        <div class="container mt-5 d-flex justify-content-center">
+            <div class="card p-3">
+                <div class="d-flex align-items-center">
+                    <div class="image pe-2">
+                        <img src="{{ url_for('static', filename='fotos_perfil/{}'.format(user.foto_perfil)) }}" class="rounded" width="200">
+                    </div>
+                    <div class="ml-3 w-100">
+                        <h4 class="mb-0 mt-0">{{ user.username }}</h4>
+                        <span>{{ user.email }}</span>
+                        <div class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
+                            <div class="d-flex flex-column cursos-posts">
+                                <span class="cursos">Cursos</span>
+                                {% if user.cursos == 'Não Informado' %}
+                                    <span class="number1">0</span>
+                                {% else %}
+                                    <span class="number1">{{ user.cursos.split(';').__len__() }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex flex-column cursos-posts">
+                                <span class="posts">Posts</span>
+                                <span class="number3">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-4" style="text-align: center;">
+                <strong>Cursos</strong><br>
+                {% for curso in user.cursos.split(';') %}
+                    <button class="btn btn-success mt-2" disabled>{{ curso }}</button>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+    
+    <div class="row mt-5"></div>
+
 {% endblock %}

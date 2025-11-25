@@ -3,7 +3,25 @@
 
 {% block body %}
     <div class="container">
-        <h1>Welcome to the Home Page</h1>
-        <p>This is a simple HTML template.</p>
+        <h1>Posts</h1>
+        <!-- <p>This is a simple HTML template.</p> -->
+
+        {% for post in posts %}
+            <div class="card border mb-3 mt-5 w-75">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="{{ url_for('static', filename='fotos_perfil/{}'.format(post.autor.foto_perfil)) }}" class="img-fluid rounded-start m-3" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body m-4">
+                            <h5 class="card-title">{{ post.titulo }}</h5>
+                            <p class="card-text">{{ post.corpo }}</p>
+                            <!-- <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
     </div>
 {% endblock %}

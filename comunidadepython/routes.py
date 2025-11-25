@@ -1,7 +1,7 @@
 from flask import render_template, redirect, flash, url_for, request
 from comunidadepython import app, db, bcrypt
-from comunidadepython.forms import FormLogin, FormCriarConta, FormEditarPerfil
-from comunidadepython.models import Usuario
+from comunidadepython.forms import FormLogin, FormCriarConta, FormEditarPerfil, FormCriarPost
+from comunidadepython.models import Usuario, Post
 from flask_login import login_user, logout_user, current_user, login_required
 from secrets import token_hex
 import os
@@ -10,7 +10,8 @@ from PIL import Image
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    posts = Post.query.all()
+    return render_template('home.html', posts=posts)
 
 
 @app.route('/contatos')
@@ -32,10 +33,12 @@ def login():
 
     if form_login.validate_on_submit() and 'botao_submit_login' in request.form:
         usuario = Usuario.query.filter_by(email=form_login.email.data).first()
+
         if usuario and bcrypt.check_password_hash(usuario.senha, form_login.senha.data):
             login_user(usuario, remember=form_login.lembrar_login.data)
             flash('Login feito com sucesso. Email: {}'.format(form_login.email.data), 'alert-success')
             param_next = request.args.get('next')
+
             if param_next:
                 return redirect(param_next)
             else:
@@ -45,19 +48,18 @@ def login():
 
     if form_criarconta.validate_on_submit() and 'botao_submit_criar_conta' in request.form:
         senha_criptografada = bcrypt.generate_password_hash(form_criarconta.senha.data)
-        with app.app_context():
-            # criar usuario
-            usuario = Usuario(
-                username=form_criarconta.username.data,
-                email=form_criarconta.email.data,
-                senha=senha_criptografada,
-            )
 
-            # adicionar a sessao
-            db.session.add(usuario)
-            
-            # commit na sessao
-            db.session.commit()
+        usuario = Usuario(
+            username=form_criarconta.username.data,
+            email=form_criarconta.email.data,
+            senha=senha_criptografada,
+        )
+
+        # adicionar a sessao
+        db.session.add(usuario)
+        
+        # commit na sessao
+        db.session.commit()
             
         flash('Conta criada com sucesso. Email: {}'.format(form_criarconta.email.data), 'alert-success')
         return redirect(url_for('home'))
@@ -86,10 +88,25 @@ def perfil():
     return render_template('perfil.html', foto_perfil=foto_perfil, qtd_cursos=qtd_cursos)
 
 
-@app.route('/post/criar')
+@app.route('/post/criar', methods=['GET', 'POST'])
 @login_required
 def criar_post():
-    return render_template('criarpost.html')
+    form = FormCriarPost()
+
+    if form.validate_on_submit():
+        post = Post(
+            titulo=form.titulo.data,
+            corpo=form.corpo.data,
+            autor=current_user
+        )
+
+        db.session.add(post)
+        db.session.commit()
+
+        flash('Post Criado com Sucesso!!', 'alert-success')
+        return redirect(url_for('home'))
+
+    return render_template('criarpost.html', form=form)
 
 
 def salvar_imagem(imagem):

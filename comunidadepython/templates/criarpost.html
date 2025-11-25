@@ -2,5 +2,50 @@
 
 
 {% block body %}
-    <h1>Criar post</h1>
+    
+    <div class="container mt-2">
+        <h1>Criar post</h1>
+
+        <form action="" method="POST" class="border p-3 pb-1 mt-2">
+            {{ form.csrf_token }}
+
+            <fieldset>
+                {{ form.titulo.label(class='form-control-label') }}
+                
+                {% if form.titulo.errors %}
+                    {{ form.titulo(class='form-control is-invalid') }}
+                    
+                    {% for erro in form.titulo.errors %}
+                        <div class="invalid-feedback">
+                            {{ erro }}
+                        </div>
+                    {% endfor %}
+                    
+                {% else %}
+                    {{ form.titulo(class='form-control') }}
+                {% endif %}
+
+                {{ form.corpo.label(class='form-control-label') }}
+                
+                {% if form.corpo.errors %}
+                    {{ form.corpo(class='form-control is-invalid') }}
+                    
+                    {% for erro in form.corpo.errors %}
+                        <div class="invalid-feedback">
+                            {{ erro }}
+                        </div>
+                    {% endfor %}
+
+                {% else %}
+                    {{ form.corpo(class='form-control') }}
+                {% endif %}
+
+            </fieldset>
+
+            {{ form.botao_submit_criar_post(class="btn btn-primary mb-3 mt-3") }}
+
+        </form>
+
+    </div>    
+    
 {% endblock %}
