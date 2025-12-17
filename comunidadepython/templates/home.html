@@ -3,20 +3,30 @@
 
 {% block body %}
     <div class="container">
-        <h1>Posts</h1>
-        <!-- <p>This is a simple HTML template.</p> -->
+        <h1 class="mb-4">Posts</h1>
 
         {% for post in posts %}
-            <div class="card border mb-3 mt-5 w-75">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="{{ url_for('static', filename='fotos_perfil/{}'.format(post.autor.foto_perfil)) }}" class="img-fluid rounded-start m-3" alt="...">
+            <div class="card border mb-4 shadow-sm w-100">
+                <div class="row g-0 d-flex">
+                    
+                    <div class="col-md-4 d-flex align-items-center justify-content-center bg-light post-image-column">
+                        
+                        <img src="{{ url_for('static', filename='fotos_perfil/{}'.format(post.autor.foto_perfil)) }}" class="img-fluid post-img-standard-contain" alt="Imagem de{{ post.titulo }}">
                     </div>
+
                     <div class="col-md-8">
-                        <div class="card-body m-4">
-                            <h5 class="card-title">{{ post.titulo }}</h5>
-                            <p class="card-text">{{ post.corpo }}</p>
-                            <!-- <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p> -->
+                        <div class="card-body p-4">
+                            <a style="text-decoration: none;" href="{{ url_for('exibir_post', post_id=post.id) }}">
+                                <h5>{{ post.titulo }}</h5>
+                            </a>
+
+                            <p class="card-text text-secondary text-break">{{ post.corpo }}</p>
+
+                            <p class="card-text mt-3">
+                                <small class="text-muted">Por: {{ post.autor.username }}</small><br>
+                                <small class="text-muted">Email: {{ post.autor.email }}</small><br>
+                                <small class="text-muted">Criado em: {{ post.data_criacao.strftime('%Y/%d/%m') }}</small>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -24,4 +34,24 @@
         {% endfor %}
 
     </div>
+
+    <style>
+        /* Define a altura fixa para a coluna da imagem, garantindo que o texto e a imagem fiquem alinhados */
+        .post-image-column {
+             /* Defina uma altura ideal. Ajustei para 250px, pois é um bom equilíbrio. 
+             O 'card-body' na coluna do texto ditará a altura final do cartão.
+             */
+            height: 250px; 
+            overflow: hidden; /* Garante que nada passe desta altura */
+        }
+        
+        .post-img-standard-contain {
+            /* Essencial para o modo 'contain' */
+            height: 100%; /* Ocupa 100% da altura da coluna ('post-image-column') */
+            width: 100%; /* Ocupa 100% da largura da coluna ('col-md-4') */
+            
+            /* ESSENCIAL: Garante que a imagem inteira seja visível. */
+            object-fit: contain; 
+        }
+    </style>
 {% endblock %}
