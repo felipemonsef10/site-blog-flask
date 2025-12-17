@@ -77,7 +77,8 @@
                                 {{ form.corpo(class="form-control") }}
                             {% endif %}
 
-                            {{ form.botao_submit_criar_post(class="btn btn-primary mb-3 mt-3") }}
+                            <!-- {{ form.botao_submit_criar_post(class="btn btn-primary mb-3 mt-3") }} -->
+                            <button type="submit" class="btn btn-primary mb-3 mt-3">Confirmar</button>
                         </div>
                     </div>
                 </div>
@@ -126,7 +127,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-danger">Excluir</button>
+                <form action="{{ url_for('excluir_post', post_id=post.id) }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
             </div>
         </div>
     </div>

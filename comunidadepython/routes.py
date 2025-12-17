@@ -1,4 +1,4 @@
-from flask import render_template, redirect, flash, url_for, request
+from flask import render_template, redirect, flash, url_for, request, abort
 from comunidadepython import app, db, bcrypt
 from comunidadepython.forms import FormLogin, FormCriarConta, FormEditarPerfil, FormCriarPost
 from comunidadepython.models import Usuario, Post
@@ -189,6 +189,10 @@ def editar_perfil():
 @login_required
 def exibir_post(post_id):
     post = Post.query.get(post_id)
+    if not post:
+        flash('Post não encontrado.', 'alert-danger')
+        return redirect(url_for('home'))
+
     if current_user == post.autor:
         form = FormCriarPost()
 
@@ -205,3 +209,21 @@ def exibir_post(post_id):
     else:
         form = None
     return render_template('post.html', post=post, form=form)
+
+
+@app.route('/post/<post_id>/excluir', methods=['GET', 'POST'])
+@login_required
+def excluir_post(post_id):
+    post = Post.query.get(post_id)
+    if not post:
+        flash('Post não encontrado.', 'alert-danger')
+        return redirect(url_for('home'))
+
+    if current_user == post.autor:
+        db.session.delete(post)
+        db.session.commit()
+        
+        flash('Post Excluído com Sucesso', 'alert-warning')
+        return redirect(url_for('home'))
+    else:
+        abort(403)

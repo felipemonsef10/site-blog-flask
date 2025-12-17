@@ -17,10 +17,13 @@ class Usuario(db.Model, UserMixin):
     cursos = db.Column(db.String, nullable=False, default='Não Informado')
     posts = db.relationship('Post', backref='autor', lazy=True)
 
+    def contar_posts(self):
+        return len(self.posts)
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String, nullable=False)
     corpo = db.Column(db.Text, nullable=False)
-    data_criacao = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    data_criacao = db.Column(db.DateTime, nullable=False, default=datetime.now)
     id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
