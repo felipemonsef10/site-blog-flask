@@ -11,8 +11,8 @@ app.config['SECRET_KEY'] = 'cafe21d28999850c8855b75bb3192523'
 
 if os.getenv('DATABASE_URL'):
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
